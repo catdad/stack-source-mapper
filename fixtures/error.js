@@ -4,15 +4,15 @@
   }
 
   function two() {
-    return one() + one();
+    return one();
   }
 
   function three() {
-    return two() + one();
+    return two();
   }
 
   function four() {
-    return three() + one();
+    return three();
   }
 
   return four();

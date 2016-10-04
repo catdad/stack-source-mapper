@@ -22,12 +22,13 @@ outputLines.push(errLines.shift());
 var consumer = new SourceMapConsumer(mapFile);
 
 outputLines = outputLines.concat(errLines.map(function (errLine) {
-  var regex = /\((.+):([0-9]+):([0-9]+)\)/;
+//  var regex = /\((.+):([0-9]+):([0-9]+)\)/;
+  var regex = /^ +at.+\((.*):([0-9]+):([0-9]+)/;
 
   var matches = regex.exec(errLine);
 
   if (!matches) {
-    console.log('no matches for line:', errLine);
+//    console.log('no matches for line:', errLine);
 
     return errLine;
   }
@@ -38,7 +39,11 @@ outputLines = outputLines.concat(errLines.map(function (errLine) {
     column: Number(matches[3])
   };
 
+  console.log(errObj);
+
   var original = consumer.originalPositionFor(errObj);
+
+  console.log(original);
 
   if (original.source === null) {
     // this is not part of the file, so return the original line
@@ -46,9 +51,9 @@ outputLines = outputLines.concat(errLines.map(function (errLine) {
   }
 
   var out = util.format(
-    '    at %s (%s:%s:%s)',
+    '   at %s (%s:%s:%s)',
     original.name || '<anonymous>',
-    path.resolve(root, original.source),
+    path.resolve(root, original.source.replace(/^\//, '')),
     original.line,
     original.column
   );
