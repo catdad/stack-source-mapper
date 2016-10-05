@@ -4,35 +4,36 @@ var path = require('path');
 var util = require('util');
 
 var SourceMapConsumer = require('source-map').SourceMapConsumer;
+var stackTrace = require('stack-trace');
 
-module.exports = function (stacktrace, sourcemap) {
+module.exports = function (stacktrace, sourcemap, filename) {
 
-  var errLines = stacktrace.replace(/\r\n/g, '\n').split('\n');
+  // this feels like a hack... but I guess it works
+  var parsedLines = stackTrace.parse({
+    stack: stacktrace
+  });
 
-  var outputLines = [];
+  var lines = stacktrace.replace(/\r\n/g, '\n').split('\n');
+  var errMsg = lines.shift();
+
+  parsedLines.forEach(function (line, idx) {
+    line.lineString = lines[idx];
+  });
+
+  var outputLines = [errMsg];
   var root = path.resolve('.');
-
-  // the first line is an error message, so just copy it over
-  outputLines.push(errLines.shift());
 
   var consumer = new SourceMapConsumer(sourcemap);
 
-  outputLines = outputLines.concat(errLines.map(function (errLine) {
-  //  var regex = /\((.+):([0-9]+):([0-9]+)\)/;
-    var regex = /^ +at.+\((.*):([0-9]+):([0-9]+)/;
+  return outputLines.concat(parsedLines.map(function (line) {
 
-    var matches = regex.exec(errLine);
-
-    if (!matches) {
-  //    console.log('no matches for line:', errLine);
-
-      return errLine;
+    if (path.basename(line.getFileName()) !== filename) {
+      return line.lineString;
     }
 
     var errObj = {
-      filename: path.relative(root, matches[1]),
-      line: Number(matches[2]),
-      column: Number(matches[3])
+      line: line.getLineNumber(),
+      column: line.getColumnNumber()
     };
 
     if (errObj.line === 1) {
@@ -40,15 +41,11 @@ module.exports = function (stacktrace, sourcemap) {
       errObj.column -= 62;
     }
 
-    console.log(errObj);
-
     var original = consumer.originalPositionFor(errObj);
-
-    console.log(original);
 
     if (original.source === null) {
       // this is not part of the file, so return the original line
-      return errLine;
+      return line.lineString;
     }
 
     var out = util.format(
@@ -59,10 +56,6 @@ module.exports = function (stacktrace, sourcemap) {
       original.column
     );
 
-    console.log(errLine, '\n', out, '\n---------------------------');
-
     return out;
-  }));
-
-  return outputLines.join('\n');
+  })).join('\n');
 };

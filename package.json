@@ -6,7 +6,8 @@
     "test": "test"
   },
   "dependencies": {
-    "source-map": "^0.5.6"
+    "source-map": "^0.5.6",
+    "stack-trace": "0.0.9"
   },
   "devDependencies": {
     "chai": "^3.5.0",
