@@ -1,3 +1,4 @@
+// comment
 (function () {
   function one() {
     throw new Error('oops');

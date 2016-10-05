@@ -9,7 +9,8 @@ gulp.task('fixtures', function () {
   return gulp.src('fixtures/*.js')
     .pipe(sourcemaps.init())
     .pipe(uglify({
-      mangle: true
+      mangle: true,
+      preserveComments: 'all'
     }))
     .pipe(rename({
       suffix: '.min',
