@@ -10,4 +10,8 @@ var filePath = 'error.min.js';
 
 var mapper = require('./');
 
-mapper(errFile, mapFile);
+var result = mapper(errFile, mapFile);
+
+console.log('-------------------------------');
+console.log(result);
+console.log('-------------------------------');

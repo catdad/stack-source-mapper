@@ -35,6 +35,11 @@ module.exports = function (stacktrace, sourcemap) {
       column: Number(matches[3])
     };
 
+    if (errObj.line === 1) {
+      // node issue with adding code to the first line
+      errObj.column -= 62;
+    }
+
     console.log(errObj);
 
     var original = consumer.originalPositionFor(errObj);
