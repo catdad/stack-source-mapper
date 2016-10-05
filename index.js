@@ -52,7 +52,7 @@ module.exports = function (stacktrace, sourcemap) {
     }
 
     var out = util.format(
-      '   at %s (%s:%s:%s)',
+      '    at %s (%s:%s:%s)',
       original.name || '<anonymous>',
       path.resolve(root, original.source.replace(/^\//, '')),
       original.line,
