@@ -13,9 +13,7 @@ var sequence = require('run-sequence').use(gulp);
 
 function getStackTrace(file, done) {
   shellton('node ' + file, function (err, stdout, stderr) {
-    stderr = stderr.replace(/\r\n/g, '\n');
-
-    var stack = stderr.split('\n').slice(4).join('\n');
+    var stack = stderr.replace(/\r\n/g, '\n').split('\n').slice(4).join('\n');
 
     done(null, stack);
   });
