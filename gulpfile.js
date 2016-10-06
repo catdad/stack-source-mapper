@@ -9,6 +9,7 @@ var rename = require('gulp-rename');
 var sourcemaps = require('gulp-sourcemaps');
 var shellton = require('shellton');
 var del = require('del');
+var sequence = require('run-sequence').use(gulp);
 
 function getStackTrace(file, done) {
   shellton('node ' + file, function (err, stdout, stderr) {
@@ -55,4 +56,8 @@ gulp.task('fixtures', function () {
 
 gulp.task('clean', function () {
   return del('bin');
+});
+
+gulp.task('prep', function (done) {
+  return sequence('clean', 'fixtures', 'stack', done);
 });
