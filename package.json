@@ -1,5 +1,6 @@
 {
   "name": "stack-source-mapper",
+  "description": "decode minified error stack traces",
   "version": "0.0.0",
   "main": "index.js",
   "directories": {
@@ -29,5 +30,12 @@
   "keywords": [],
   "author": "Kiril Vatev <vatev.1@gmail.com>",
   "license": "ISC",
-  "description": ""
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/catdad/stack-source-mapper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/catdad/stack-source-mapper/issues"
+  },
+  "homepage": "https://github.com/catdad/stack-source-mapper#readme"
 }
