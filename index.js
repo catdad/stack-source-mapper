@@ -6,8 +6,7 @@ var util = require('util');
 var SourceMapConsumer = require('source-map').SourceMapConsumer;
 var stackTrace = require('stack-trace');
 
-module.exports = function (stacktrace, sourcemap, filename) {
-
+function parseStacktrace(stacktrace) {
   // this feels like a hack... but I guess it works
   var parsedLines = stackTrace.parse({
     stack: stacktrace
@@ -20,12 +19,22 @@ module.exports = function (stacktrace, sourcemap, filename) {
     line.lineString = lines[idx];
   });
 
-  var outputLines = [errMsg];
+  return {
+    message: errMsg,
+    lines: parsedLines
+  };
+}
+
+module.exports = function (stacktrace, sourcemap, filename) {
+
+  var parsedStack = parseStacktrace(stacktrace);
+
+  var outputLines = [parsedStack.message];
   var root = path.resolve('.');
 
   var consumer = new SourceMapConsumer(sourcemap);
 
-  return outputLines.concat(parsedLines.map(function (line) {
+  return outputLines.concat(parsedStack.lines.map(function (line) {
 
     if (path.basename(line.getFileName()) !== filename) {
       return line.lineString;
