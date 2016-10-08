@@ -27,6 +27,10 @@ function getStackTrace(file, done) {
 
 function saveStackTrace(nodefile, stackfile, done) {
   getStackTrace(nodefile, function (err, stack) {
+    if (err) {
+      return done(err);
+    }
+
     fs.writeFile(stackfile, stack, done);
   });
 }
