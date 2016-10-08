@@ -13,26 +13,38 @@ var sequence = require('run-sequence').use(gulp);
 
 function getStackTrace(file, done) {
   shellton('node ' + file, function (err, stdout, stderr) {
+    // we expect err code 1, but if anything else happens,
+    // treat that as an error
+    if (err && err.code !== 1) {
+      return done(err);
+    }
+
     var stack = stderr.replace(/\r\n/g, '\n').split('\n').slice(4).join('\n');
 
     done(null, stack);
   });
 }
 
-gulp.task('stack:minified', function (done) {
-  var file = path.join('bin', 'error.min.js');
-
-  getStackTrace(file, function (err, stack) {
-    fs.writeFile(path.resolve('bin', 'error.err'), stack, done);
+function saveStackTrace(nodefile, stackfile, done) {
+  getStackTrace(nodefile, function (err, stack) {
+    fs.writeFile(stackfile, stack, done);
   });
+}
+
+gulp.task('stack:minified', function (done) {
+  saveStackTrace(
+    path.join('bin', 'error.min.js'),
+    path.resolve('bin', 'error.err'),
+    done
+  );
 });
 
 gulp.task('stack:source', function (done) {
-  var file = path.join('fixtures', 'error.js');
-
-  getStackTrace(file, function (err, stack) {
-    fs.writeFile(path.resolve('bin', 'error.control.err'), stack, done);
-  });
+  saveStackTrace(
+    path.join('fixtures', 'error.js'),
+    path.resolve('bin', 'error.control.err'),
+    done
+  );
 });
 
 gulp.task('stack', ['stack:source', 'stack:minified']);
