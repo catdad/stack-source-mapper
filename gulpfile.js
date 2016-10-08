@@ -25,31 +25,27 @@ function getStackTrace(file, done) {
   });
 }
 
-function saveStackTrace(nodefile, stackfile, done) {
-  getStackTrace(nodefile, function (err, stack) {
-    if (err) {
-      return done(err);
-    }
+function saveStackTrace(nodefile, stackfile) {
+  return function (done) {
+    getStackTrace(nodefile, function (err, stack) {
+      if (err) {
+        return done(err);
+      }
 
-    fs.writeFile(stackfile, stack, done);
-  });
+      fs.writeFile(stackfile, stack, done);
+    });
+  };
 }
 
-gulp.task('stack:minified', function (done) {
-  saveStackTrace(
+gulp.task('stack:minified', saveStackTrace(
     path.join('bin', 'error.min.js'),
-    path.resolve('bin', 'error.err'),
-    done
-  );
-});
+    path.resolve('bin', 'error.err')
+));
 
-gulp.task('stack:source', function (done) {
-  saveStackTrace(
+gulp.task('stack:source', saveStackTrace(
     path.join('fixtures', 'error.js'),
-    path.resolve('bin', 'error.control.err'),
-    done
-  );
-});
+    path.resolve('bin', 'error.control.err')
+));
 
 gulp.task('stack', ['stack:source', 'stack:minified']);
 
