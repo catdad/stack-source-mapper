@@ -3,6 +3,8 @@
 var path = require('path');
 var util = require('util');
 
+var _ = require('lodash');
+var Minimatch = require('minimatch').Minimatch;
 var SourceMapConsumer = require('source-map').SourceMapConsumer;
 var stackTrace = require('stack-trace');
 
@@ -25,18 +27,25 @@ function parseStacktrace(stacktrace) {
   };
 }
 
-module.exports = function (stacktrace, sourcemap, filename) {
+function createDecoder(sourcemaps, options) {
+  var maps = _.reduce(sourcemaps, function (memo, map, pattern) {
+    memo[pattern] = {
+      map: map,
+      consumer: new SourceMapConsumer(map),
+      matcher: new Minimatch(pattern),
+      pattern: pattern
+    };
 
-  var parsedStack = parseStacktrace(stacktrace);
+    return memo;
+  }, {});
 
-  var outputLines = [parsedStack.message];
-  var root = path.resolve('.');
+  return function decoder(line) {
+    var filename = line.getFileName();
+    var mapper = _.find(maps, function (map) {
+      return map.matcher.match(filename);
+    });
 
-  var consumer = new SourceMapConsumer(sourcemap);
-
-  return outputLines.concat(parsedStack.lines.map(function (line) {
-
-    if (path.basename(line.getFileName()) !== filename) {
+    if (!mapper) {
       return line.lineString;
     }
 
@@ -50,7 +59,7 @@ module.exports = function (stacktrace, sourcemap, filename) {
       errObj.column -= 62;
     }
 
-    var original = consumer.originalPositionFor(errObj);
+    var original = mapper.consumer.originalPositionFor(errObj);
 
     if (original.source === null) {
       // this is not part of the file, so return the original line
@@ -60,11 +69,24 @@ module.exports = function (stacktrace, sourcemap, filename) {
     var out = util.format(
       '    at %s (%s:%s:%s)',
       original.name || '<anonymous>',
-      path.resolve(root, original.source.replace(/^\//, '')),
+      options.root ?
+        path.resolve(options.root, original.source.replace(/^\//, '')) :
+        original.source.replace(/^\//, ''),
       original.line,
       original.column
     );
 
     return out;
+  };
+}
+
+module.exports = function (stacktrace, sourcemaps, options) {
+  options = options || {};
+
+  var parsedStack = parseStacktrace(stacktrace);
+  var decoder = createDecoder(sourcemaps, options);
+
+  return [parsedStack.message].concat(parsedStack.lines.map(function (line) {
+    return decoder(line);
   })).join('\n');
 };

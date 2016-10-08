@@ -10,6 +10,10 @@ var filePath = 'error.min.js';
 
 var mapper = require('./');
 
-var result = mapper(errFile, mapFile, 'error.min.js');
+var result = mapper(errFile, {
+  '**/error.min.js': mapFile
+}, {
+  root: process.cwd()
+});
 
 console.log(result);
