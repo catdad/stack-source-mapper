@@ -83,10 +83,10 @@ function createDecoder(sourcemaps, options) {
 module.exports = function (stacktrace, sourcemaps, options) {
   options = options || {};
 
-  var parsedStack = parseStacktrace(stacktrace);
+  var stack = parseStacktrace(stacktrace);
   var decoder = createDecoder(sourcemaps, options);
 
-  return [parsedStack.message].concat(parsedStack.lines.map(function (line) {
+  return [stack.message].concat(stack.lines.map(function (line) {
     return decoder(line);
   })).join('\n');
 };
