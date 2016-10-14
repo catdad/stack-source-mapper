@@ -66,7 +66,7 @@ function createDecoder(sourcemaps, options) {
       return line.lineString;
     }
 
-    var out = util.format(
+    return util.format(
       '    at %s (%s:%s:%s)',
       original.name || '<anonymous>',
       options.root ?
@@ -75,8 +75,6 @@ function createDecoder(sourcemaps, options) {
       original.line,
       original.column
     );
-
-    return out;
   };
 }
 
@@ -86,7 +84,5 @@ module.exports = function (stacktrace, sourcemaps, options) {
   var stack = parseStacktrace(stacktrace);
   var decoder = createDecoder(sourcemaps, options);
 
-  return [stack.message].concat(stack.lines.map(function (line) {
-    return decoder(line);
-  })).join('\n');
+  return [stack.message].concat(stack.lines.map(decoder)).join('\n');
 };
