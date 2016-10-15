@@ -25,8 +25,8 @@
     "uglify-js": "^2.7.3"
   },
   "scripts": {
-    "test": "mocha",
-    "coverage": "istanbul cover --dir coverage node_modules/mocha/bin/_mocha"
+    "test": "gulp prep && mocha",
+    "coverage": "gulp prep && istanbul cover --dir coverage node_modules/mocha/bin/_mocha"
   },
   "keywords": [],
   "author": "Kiril Vatev <vatev.1@gmail.com>",
