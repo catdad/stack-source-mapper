@@ -53,8 +53,7 @@ gulp.task('fixtures', function () {
   return gulp.src('fixtures/*.js')
     .pipe(sourcemaps.init())
     .pipe(uglify({
-      mangle: true,
-      preserveComments: 'all'
+      mangle: true
     }))
     .pipe(rename({
       suffix: '.min',
