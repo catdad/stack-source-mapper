@@ -3,9 +3,6 @@
   "description": "decode minified error stack traces",
   "version": "0.0.0",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "dependencies": {
     "lodash": "^4.16.4",
     "minimatch": "^3.0.3",
