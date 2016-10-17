@@ -25,7 +25,7 @@
     "test": "gulp prep && mocha",
     "coverage": "gulp prep && istanbul cover --dir coverage node_modules/mocha/bin/_mocha"
   },
-  "keywords": [],
+  "keywords": ["stack", "stacktrace", "decode", "sourcemap"],
   "author": "Kiril Vatev <vatev.1@gmail.com>",
   "license": "ISC",
   "repository": {
