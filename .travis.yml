@@ -13,6 +13,6 @@ addons:
   code_climate:
     repo_token: c2a2d809ff4494c25e6e9c5e925a28921379363d56ba0a48b7f6a9be26fb3fb8
 
-#after_script:
-#  - npm run coverage
-#  - codeclimate-test-reporter < coverage/lcov.info
+after_script:
+  - npm run coverage
+  - codeclimate-test-reporter < coverage/lcov.info
