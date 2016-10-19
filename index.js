@@ -8,6 +8,12 @@ var Minimatch = require('minimatch').Minimatch;
 var SourceMapConsumer = require('source-map').SourceMapConsumer;
 var stackTrace = require('stack-trace');
 
+function assertString(name, str) {
+  if (!_.isString(str)) {
+    throw new TypeError(name + ' must be a string');
+  }
+}
+
 function parseStacktrace(stacktrace) {
   // this feels like a hack... but I guess it works
   var parsedLines = stackTrace.parse({
@@ -79,7 +85,9 @@ function createDecoder(sourcemaps, options) {
 }
 
 module.exports = function (stacktrace, sourcemaps, options) {
-  options = options || {};
+  assertString('stacktrace', stacktrace);
+
+  options = _.isPlainObject(options) ? options : {};
 
   var stack = parseStacktrace(stacktrace);
   var decoder = createDecoder(sourcemaps, options);
