@@ -11,9 +11,11 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "codeclimate-test-reporter": "^0.4.0",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.1.1",
     "gulp-uglify": "^2.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.1.0",
@@ -25,7 +27,12 @@
     "test": "gulp prep && mocha",
     "coverage": "gulp prep && istanbul cover --dir coverage node_modules/mocha/bin/_mocha"
   },
-  "keywords": ["stack", "stacktrace", "decode", "sourcemap"],
+  "keywords": [
+    "stack",
+    "stacktrace",
+    "decode",
+    "sourcemap"
+  ],
   "author": "Kiril Vatev <vatev.1@gmail.com>",
   "license": "ISC",
   "repository": {
