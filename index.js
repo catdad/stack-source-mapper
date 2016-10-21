@@ -14,6 +14,22 @@ function assertString(name, str) {
   }
 }
 
+function assertMapHash(name, obj) {
+  function error() {
+    throw new TypeError(name + ' must be a hash object of source maps');
+  }
+
+  if (!_.isPlainObject(obj)) {
+    return error();
+  }
+
+  _.forEach(obj, function (sourcemap) {
+    if (!sourcemap.sources || !sourcemap.names || !sourcemap.mappings) {
+      error();
+    }
+  });
+}
+
 function parseStacktrace(stacktrace) {
   // this feels like a hack... but I guess it works
   var parsedLines = stackTrace.parse({
@@ -86,6 +102,7 @@ function createDecoder(sourcemaps, options) {
 
 module.exports = function (stacktrace, sourcemaps, options) {
   assertString('stacktrace', stacktrace);
+  assertMapHash('sourcemaps', sourcemaps);
 
   options = _.isPlainObject(options) ? options : {};
 
