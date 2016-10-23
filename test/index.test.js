@@ -11,7 +11,13 @@ describe('[index]', function () {
     expect(mapper.bind(null, 14)).to.throw(TypeError, 'stacktrace must be a string');
   });
 
-  it('throws if sourcemap is not an object', function () {
+  it('throws if sourcemaps is not an object', function () {
     expect(mapper.bind(null, 'this is code', 14)).to.throw(TypeError, 'sourcemaps must be a hash object of source maps');
+  });
+
+  it('throws if one of the maps in sourcemaps doesn\'t have all necessary properties', function () {
+    expect(mapper.bind(null, 'this is code', {
+      key: { random: 'stuff' }
+    })).to.throw(TypeError, 'sourcemaps must be a hash object of source maps');
   });
 });
